@@ -39,73 +39,53 @@ get_number_byMe( int B[][N])
 {
  	int i, j ;
  	int NUM;
+ 	int overlap = 1;
  	
- 	printf("input number = ");
-	scanf("%i", &NUM);
+ 	while ( overlap != 0)
+ 	{
+ 		printf("input number = ");
+	    scanf("%i", &NUM);
 	
- 	if ( NUM < 1 || NUM > N*N)
-	{
-		printf(" 범위 외의 숫자 입니다 \n");
-	}
- 	
-    else
-    {
-    	for( i=0 ; i<N ; i++)
+ 	    if ( NUM < 1 || NUM > N*N)
 	    {
-		    for( j=0 ; j<N ; j++)
-		    {
-			    if( NUM==B[i][j] )
-			    {
-			    	printf(" 나의 빙고 \n");
-			    	process_bingo( B, NUM);
-		            print_bingo( B );
-		            break;
-				}
-				else
-				{
-					printf("  1 이미 선택한 숫자 입니다.\n");
-					break; 
-				}
-		    }
-	    }  
-	}    
-	
+		    printf(" 범위 외의 숫자 입니다 \n");
+	    }
+ 	
+        else 
+        {
+    	    for( i=0 ; i<N ; i++)
+	        {
+		        for( j=0 ; j<N ; j++)
+		        {
+			        if( B[i][j] == NUM )
+			        {
+			    	    printf(" 나의 빙고 \n");
+			    	    process_bingo( B, NUM);
+		                print_bingo( B );
+		                overlap=0;
+				    }
+		        }
+		    
+	        }  
+	        
+	        if (overlap==1)
+	            printf(" 이미 선택된 숫자 입니다\n "); 
+	    }         
+	 }	
  
 }
 
-get_number_byCom(int CB[][N])
+get_number_byCom(int B[][N])
 {
 	int i, j ;
-	int k;
+	int NUM;
 	
 	srand(time(NULL));
-	k = rand() %N*N + 1 ;
-	 
-	if ( k < 1 || k > N*N)
-	{
-		printf(" 범위 외의 숫자 입니다 \n");
-	}
- 	
-    else
-    {
-    	for( i=0 ; i<N ; i++)
-	    {
-		    for( j=0 ; j<N ; j++)
-		    {
-			    if( k==CB[i][j] )
-			    {
-			    	printf(" C 빙고 \n");
-					process_bingo( CB, k);
-		            print_bingo( CB );
-				}
-				else
-				{
-					printf(" 이미 선택한 숫자 입니다.\n");
-					break; 
-				}
-		    }
-	    }  
-	}    
+	NUM = rand() %N*N + 1 ; //겹치지 않는 난수 생성 방법 
+	
+	printf(" C 빙고 \n");
+	process_bingo( B, NUM);
+	print_bingo( B );
 	
 } 
 

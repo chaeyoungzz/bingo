@@ -4,7 +4,7 @@
 #define M 2
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
-initiate_bingo(int B[][N], int CB[][N]) 
+initiate_bingo(int B[][N], int CB[][N])      //B:me  CB:computer
 {
 	int i, j, k=1, Z=16;
 	
@@ -38,22 +38,22 @@ print_bingo(int BINGO[][N])
 get_number_byMe( int B[][N])
 {
  	int i, j ;
- 	int num;
- 	int overlap = 1;
+ 	int num;         // 선택한 빙고 번 호  
+ 	int overlap = 1; // 중복 선택 방지  
  	
  	while ( overlap != 0)
  	{
  		printf("input number = ");
 	    scanf("%i", &num);
 	
- 	    if ( num < 1 || num > N*N)
+ 	    if ( num < 1 || num > N*N)         // 범위 내 숫자 선택  
 	    {
 		    printf(" 범위 외의 숫자 입니다 \n");
 	    }
  	
         else 
         {
-    	    for( i=0 ; i<N ; i++)
+    	    for( i=0 ; i<N ; i++)          // 중복 선택 방지  
 	        {
 		        for( j=0 ; j<N ; j++)
 		        {
@@ -62,7 +62,6 @@ get_number_byMe( int B[][N])
 		                overlap=0;
 				    }
 		        }
-		    
 	        }  
 	        
 	        if (overlap==1)
@@ -75,16 +74,18 @@ get_number_byMe( int B[][N])
 get_number_byCom(int B[][N])
 {
 	int i, j ;
-	int num;
+	int num; //선택한 빙고 번호  
+	int overlap=1;
 	
 	srand(time(NULL));
-	num = rand() %N*N + 1 ; //겹치지 않는 난수 생성 방법 
+	num = rand() %N*N + 1 ; //겹치지 않는 난수 생성 방법
+	
 	printf(" c input = %i\n",num);
 	
 	return num;
 } 
 
-process_bingo(int BINGO[][N], int num)
+process_bingo(int BINGO[][N], int num) // num : 선택한 빙고 번호  
 {
 	int i, j ;
 	
@@ -103,8 +104,8 @@ process_bingo(int BINGO[][N], int num)
 count_bingo(int B[][N])
 {
 	int i, j;
-	int count3 = 0, count4 = 0;
-	int CR1=0,CR2=0, C1=0, C2=0;
+	int count3 = 0, count4 = 0; // 3 : 오른쪽 방향 대각선  4 : 왼쪽방향 대각선  
+	int CR1=0, CR2=0, C1=0, C2=0; // 1:가로  2:세로  3:오른쪽 방향 대각선   4: 왼쪽 방향 대각선   
 	int m;
 	
 	
@@ -154,11 +155,12 @@ count_bingo(int B[][N])
 
 int main(int argc, char *argv[]) 
 {
-	int bingo_game[N][N];
-	int C_bingo_game[N][N];
-	int bingo;
-	int Cbingo;
-	int NUM;
+	int bingo_game[N][N];    // 내꺼 
+	int C_bingo_game[N][N];  // 컴퓨터  
+	int bingo;               // 나의 빙고 수  
+	int Cbingo;              // 컴퓨터 빙고 수  
+	int NUM;                 // 선택한 빙고 번호  
+	int turn=0;              
 	
 	initiate_bingo( bingo_game, C_bingo_game ) ;
 	
@@ -179,6 +181,7 @@ int main(int argc, char *argv[])
 	    Cbingo = count_bingo(C_bingo_game);
 	    printf("bingo %i\n", bingo);
 	    printf("Cbingo %i\n", Cbingo);
+	    turn++;	    
 	    
 	    if(bingo < M && Cbingo < M) 
 		{
@@ -193,12 +196,12 @@ int main(int argc, char *argv[])
 	        Cbingo = count_bingo(C_bingo_game);
 	        printf("bingo %i\n", bingo);
 	        printf("Cbingo %i\n", Cbingo);
+	        turn++;	
 	
 		}    
     }
-
 	
-	
+	printf("  WIN!!!!, %iturn",turn );
 	
 	return 0;
 }

@@ -1,23 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #define N 4
 #define M 2
 
+
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
-initiate_bingo(int B[][N], int CB[][N])      //B:me  CB:computer
+initiate_bingo(int BINGO[][N])      //
 {
-	int i, j, k=1, Z=16;
+	int x, y=1, i, j;
+ 	int k=0, w=15, T;
+ 	int G[N*N];
+ 	int p;
+ 	
+ 	for (x=0 ; x<N*N ; x++)
+ 	{
+ 		G[x]=y;
+ 		y++;
+	}
 	
+	srand(time(NULL)); 
 	for( i=0 ; i<N ; i++)
 	{
-		for( j=0 ; j<N ; j++)
+	    for( j=0 ; j<N ; j++)
 		{
-			
-		    B[i][j] = k;    // 랜덤 배열 설정   
-			CB[i][j] = k;
-			k++;
+			BINGO[i][j] = G[T=rand()%(N*N-k)];	
+			p = G[w];
+	        G[w] = G[T];
+	        G[T] = p;
+	        k++; 
+	        w--;
+	        
 		}
 	}
+	
 }
 
 print_bingo(int BINGO[][N]) 
@@ -73,13 +89,25 @@ get_number_byMe( int B[][N])
 
 get_number_byCom(int B[][N])
 {
-	int i, j ;
-	int num; //선택한 빙고 번호  
-	int overlap=1;
-	
-	srand(time(NULL));
-	num = rand() %N*N + 1 ; //겹치지 않는 난수 생성 방법
-	
+	int num;
+	int i,j;
+	int overlap = 1; // 중복 선택 방지  
+ 	
+ 	while ( overlap != 0)
+ 	{
+ 		num=rand()%N*N+1;
+        
+        for( i=0 ; i<N ; i++)          // 중복 선택 방지  
+	    {
+		    for( j=0 ; j<N ; j++)
+		    {
+			    if( B[i][j] == num )
+			    {
+		            overlap=0;
+				}
+		    }
+	    }            
+	 }	      
 	printf(" c input = %i\n",num);
 	
 	return num;
@@ -157,12 +185,22 @@ int main(int argc, char *argv[])
 {
 	int bingo_game[N][N];    // 내꺼 
 	int C_bingo_game[N][N];  // 컴퓨터  
-	int bingo;               // 나의 빙고 수  
-	int Cbingo;              // 컴퓨터 빙고 수  
+	int bingo, Cbingo;               // 나의 빙고 수, 컴퓨터 빙고 수  
 	int NUM;                 // 선택한 빙고 번호  
 	int turn=0;              
 	
-	initiate_bingo( bingo_game, C_bingo_game ) ;
+	initiate_bingo(bingo_game) ;
+	int i, j, k=1;
+	
+	for( i=0 ; i<N ; i++)
+	{
+		for( j=0 ; j<N ; j++)
+		{
+			C_bingo_game[i][j] = k;
+			k++;
+		}
+	}
+	
 	
 	print_bingo(bingo_game);
 	print_bingo(C_bingo_game);

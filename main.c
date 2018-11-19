@@ -1,24 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define N 4
-#define M 2
+#define N 5
+#define M 1
 
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
-initiate_bingo(int BINGO[][N])      //
+initiate_bingo(int BINGO[][N])  
 {
 	int x, y=1, i, j;
- 	int k=0, w=15, T;
- 	int G[N*N];
+ 	int k=0, w=N*N-1, T;
+ 	int G[N*N]; // 1~N*N 숫자 불러오기 위한 배열  
  	int p;
  	
+ 	// 1~N*N 숫자 불러옴  
  	for (x=0 ; x<N*N ; x++)
  	{
  		G[x]=y;
  		y++;
 	}
 	
+	// 중복 방지 배열  
 	srand(time(NULL)); 
 	for( i=0 ; i<N ; i++)
 	{
@@ -29,8 +31,7 @@ initiate_bingo(int BINGO[][N])      //
 	        G[w] = G[T];
 	        G[T] = p;
 	        k++; 
-	        w--;
-	        
+	        w--;     
 		}
 	}
 	
@@ -54,7 +55,7 @@ print_bingo(int BINGO[][N])
 get_number_byMe( int B[][N])
 {
  	int i, j ;
- 	int num;         // 선택한 빙고 번 호  
+ 	int num;  // 선택한 빙고 번 호  
  	int overlap = 1; // 중복 선택 방지  
  	
  	while ( overlap != 0)
@@ -83,31 +84,35 @@ get_number_byMe( int B[][N])
 	        if (overlap==1)
 	            printf(" 이미 선택된 숫자 입니다\n "); 
 	    }         
-	 }	
+	 }	 
 	return num;
 }
 
-get_number_byCom(int B[][N])
+get_number_byCom(int cn[], int t ,int before_num)
 {
-	int num;
-	int i,j;
-	int overlap = 1; // 중복 선택 방지  
+	int x;
+ 	int w=N*N-1, T;
+ 	int p;
+ 	int num;
  	
- 	while ( overlap != 0)
- 	{
- 		num=rand()%N*N+1;
-        
-        for( i=0 ; i<N ; i++)          // 중복 선택 방지  
-	    {
-		    for( j=0 ; j<N ; j++)
-		    {
-			    if( B[i][j] == num )
-			    {
-		            overlap=0;
-				}
-		    }
-	    }            
-	 }	      
+	srand(time(NULL)); 
+	
+	num = cn[T=rand()%(N*N-2*t)];	
+	p = cn[w-2*t];
+	cn[w-2*t] = cn[T];
+	cn[T] = p; 
+	
+	// 중복 선택 방지  
+	for (x=0 ; x<N*N ; x++)
+	{
+		if (cn[x]==before_num)
+	    {	
+	        p = cn[w-2*t-1];
+	        cn[w-2*t-1] = cn[x];
+	        cn[x] = p; 
+	    }
+	}
+	
 	printf(" c input = %i\n",num);
 	
 	return num;
@@ -171,10 +176,6 @@ count_bingo(int B[][N])
         if ( count4 !=0 && count4%N == 0)
             C2=1;
 	}
-	printf(" 가로  %i\n", CR1);
-	printf(" 세로  %i\n", CR2);
-	printf(" 대  %i\n", C1);
-	printf(" 대2  %i\n",C2 );
 	m=CR1+CR2+C1+C2;
 	
 	return m;
@@ -183,24 +184,21 @@ count_bingo(int B[][N])
 
 int main(int argc, char *argv[]) 
 {
-	int bingo_game[N][N];    // 내꺼 
-	int C_bingo_game[N][N];  // 컴퓨터  
-	int bingo, Cbingo;               // 나의 빙고 수, 컴퓨터 빙고 수  
-	int NUM;                 // 선택한 빙고 번호  
+	int bingo_game[N][N], C_bingo_game[N][N];    // 내꺼  컴퓨터 
+	int bingo=0, Cbingo=0; // 나의 빙고 수, 컴퓨터 빙고 수  
+	int NUM, CNUM; // 선택한 빙고 번호  
+	int CN[N*N], i;// 컴튜터 중복 방지 
+	int y=1;  // CN[] 배열                   
 	int turn=0;              
 	
 	initiate_bingo(bingo_game) ;
-	int i, j, k=1;
-	
-	for( i=0 ; i<N ; i++)
-	{
-		for( j=0 ; j<N ; j++)
-		{
-			C_bingo_game[i][j] = k;
-			k++;
-		}
+	initiate_bingo(C_bingo_game);
+	 
+	for (i=0 ; i<N*N ; i++)
+ 	{
+ 		CN[i]=y;
+ 		y++;
 	}
-	
 	
 	print_bingo(bingo_game);
 	print_bingo(C_bingo_game);
@@ -219,13 +217,13 @@ int main(int argc, char *argv[])
 	    Cbingo = count_bingo(C_bingo_game);
 	    printf("bingo %i\n", bingo);
 	    printf("Cbingo %i\n", Cbingo);
-	    turn++;	    
+		printf("\n");	    
 	    
 	    if(bingo < M && Cbingo < M) 
 		{
-			NUM = get_number_byCom(C_bingo_game);
-	        process_bingo(bingo_game, NUM);
-	        process_bingo(C_bingo_game, NUM);
+			CNUM = get_number_byCom(CN, turn, NUM);
+	        process_bingo(bingo_game, CNUM);
+	        process_bingo(C_bingo_game, CNUM);
 	    
 	        print_bingo(bingo_game);
 	        print_bingo(C_bingo_game);
@@ -234,13 +232,23 @@ int main(int argc, char *argv[])
 	        Cbingo = count_bingo(C_bingo_game);
 	        printf("bingo %i\n", bingo);
 	        printf("Cbingo %i\n", Cbingo);
+	        printf("\n");
 	        turn++;	
 	
 		}    
     }
+    
+    
+    //빙고 승자 판단 , 횟수  
+	if(bingo >= M) 
+	{
+		printf(" WIN!!!!, %iturn",turn );
+	}
 	
-	printf("  WIN!!!!, %iturn",turn );
-	
+	else if (Cbingo >= M)
+	{
+		printf(" COM WIN!!!!, %iturn",turn );
+	}
 	return 0;
 }
 
